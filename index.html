@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#116149" />
+  <title>Lopes Tur</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar"><div class="brand"><img class="brand-photo" src="lopes-tur-carro.png" alt="Carro Lopes Tur" /><div><span class="eyebrow">CONTROLE DO SEU CARRO</span><h1>Lopes Tur</h1></div></div><button class="icon-button" id="exportButton" title="Exportar dados">⇩</button></header>
+  <main id="app" class="content"></main>
+  <nav class="bottom-nav" aria-label="Navegação principal">
+    <button data-view="dashboard" class="active">⌂<span>Painel</span></button>
+    <button data-view="income">＋<span>Ganhos</span></button>
+    <button data-view="expense">−<span>Gastos</span></button>
+    <button data-view="reports">▥<span>Relatórios</span></button>
+    <button data-view="settings">⚙<span>Ajustes</span></button>
+  </nav>
+  <div id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
