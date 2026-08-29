@@ -1,4 +1,4 @@
-const SUPABASE_URL = window.LOPES_TUR_SUPABASE_URL || 'https://gtrntzlbipyxehtaxybu.supabase.co';
+const SUPABASE_URL = (typeof window !== 'undefined' && window.LOPES_TUR_SUPABASE_URL) || 'https://gtrntzlbipyxehtaxybu.supabase.co';
 const UBER_AUTH_ENDPOINT = '/functions/v1/uber-auth';
 const UBER_SYNC_ENDPOINT = '/functions/v1/uber-sync';
 const UBER_SCOPE = 'partner.accounts partner.trips partner.payments';
@@ -14,7 +14,7 @@ function buildUberAuthorizeUrl({ clientId, redirectUri, state }) {
 }
 
 function functionUrl(endpoint) {
-  const explicit = endpoint === UBER_AUTH_ENDPOINT ? window.LOPES_TUR_UBER_FUNCTION_URL : window.LOPES_TUR_UBER_SYNC_URL;
+  const explicit = typeof window !== 'undefined' && (endpoint === UBER_AUTH_ENDPOINT ? window.LOPES_TUR_UBER_FUNCTION_URL : window.LOPES_TUR_UBER_SYNC_URL);
   return (explicit || SUPABASE_URL + endpoint).replace(/\/$/, '');
 }
 
