@@ -1,15 +1,18 @@
 // Lopes Tur - correção dos Últimos lançamentos
-// Mostra Editar/Excluir diretamente em cada lançamento do painel.
+// O painel mostra somente ganhos e gastos do trabalho Uber.
 (function () {
-  if (typeof entriesList !== 'function' || typeof stats !== 'function' || typeof money !== 'function') return;
+  if (typeof entriesList !== 'function') return;
   const originalDashboard = dashboard;
   dashboard = function () {
     const html = originalDashboard();
-    const start = html.indexOf('<h3 class="section-title">Últimos lançamentos</h3>');
+    const marker = '<h3 class="section-title">Últimos lançamentos</h3>';
+    const start = html.indexOf(marker);
     if (start < 0) return html;
-    const before = html.slice(0, start + '<h3 class="section-title">Últimos lançamentos</h3>'.length);
-    const items = [...state.incomes.map(x => ({...x, kind:'income'})), ...state.expenses.map(x => ({...x, kind:'expense'}))]
-      .sort((a,b) => b.date.localeCompare(a.date)).slice(0,5);
+    const before = html.slice(0, start + marker.length);
+    const items = [
+      ...state.incomes.filter(x => x.use === 'Trabalho Uber').map(x => ({...x, kind:'income'})),
+      ...state.expenses.filter(x => x.use === 'Trabalho Uber').map(x => ({...x, kind:'expense'}))
+    ].sort((a,b) => b.date.localeCompare(a.date)).slice(0,5);
     return before + entriesList(items, true);
   };
   if (typeof render === 'function') render();
