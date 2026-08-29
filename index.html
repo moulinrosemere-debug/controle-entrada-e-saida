@@ -7,11 +7,11 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Lopes Tur" />
-  <link rel="manifest" href="manifest.webmanifest?v=8" />
+  <link rel="manifest" href="manifest.webmanifest?v=9" />
   <link rel="icon" href="logo-lopes-tur.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="logo-lopes-tur.svg" />
   <title>Lopes Tur</title>
-  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="styles.css?v=7" />
 </head>
 <body>
   <header class="topbar"><div class="brand"><img class="brand-photo" src="lopes-tur-carro.png" alt="Carro Lopes Tur" /><div><span class="eyebrow">CONTROLE DO SEU CARRO</span><h1>Lopes Tur</h1></div></div><button class="icon-button" id="exportButton" title="Exportar dados">⇩</button></header>
@@ -25,18 +25,18 @@
     <button data-view="settings">⚙<span>Ajustes</span></button>
   </nav>
   <div id="toast" role="status"></div>
-  <script src="categorias-fix.js?v=1"></script>
-  <script src="app.js?v=21"></script>
-  <script src="ultimos-lancamentos-fix.js?v=3"></script>
-  <script src="contas-carro.js?v=4"></script>
-  <script src="lembretes-contas.js?v=1"></script>
-  <script src="metas-diarias.js?v=4"></script>
-  <script src="pessoal-fix.js?v=2"></script>
-  <script src="relatorios-fix.js?v=2"></script>
-  <script src="sincronizacao.js?v=4"></script>
+  <script src="categorias-fix.js?v=2"></script>
+  <script src="app.js?v=22"></script>
+  <script src="ultimos-lancamentos-fix.js?v=4"></script>
+  <script src="contas-carro.js?v=5"></script>
+  <script src="lembretes-contas.js?v=2"></script>
+  <script src="metas-diarias.js?v=5"></script>
+  <script src="pessoal-fix.js?v=3"></script>
+  <script src="relatorios-fix.js?v=3"></script>
+  <script src="sincronizacao.js?v=5"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=7').then(async reg => {
+      navigator.serviceWorker.register('./sw.js?v=8').then(async reg => {
         if (Notification.permission === 'default') await Notification.requestPermission();
         if (reg.active) reg.active.postMessage({type:'CHECK_REMINDERS'});
       }).catch(()=>{});
