@@ -1,0 +1,14 @@
+{
+  "name": "Lopes Tur - Controle do seu carro",
+  "short_name": "Lopes Tur",
+  "description": "Controle financeiro e operacional Lopes Tur",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080b0d",
+  "theme_color": "#116149",
+  "icons": [
+    {"src":"logo-lopes-tur.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
