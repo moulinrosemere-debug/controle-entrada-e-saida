@@ -40,7 +40,7 @@
   <script src="pessoal-fix.js?v=3"></script>
   <script src="relatorios-fix.js?v=3"></script>
   <script src="sincronizacao.js?v=5"></script>
-  <script src="calculadora-km.js?v=2"></script>
+  <script src="calculadora-km.js?v=3"></script>
   <script>
     (function(){
       const app=document.getElementById('app'), kmView=document.getElementById('kmc-view'), nav=document.getElementById('kmc-nav');
@@ -54,7 +54,7 @@
   </script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=9').then(async reg => {
+      navigator.serviceWorker.register('./sw.js?v=10').then(async reg => {
         if (Notification.permission === 'default') await Notification.requestPermission();
         if (reg.active) reg.active.postMessage({type:'CHECK_REMINDERS'});
       }).catch(()=>{});
