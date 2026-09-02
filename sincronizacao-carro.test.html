@@ -1,0 +1,7 @@
+<!doctype html><meta charset="utf-8"><title>Teste sincronização Contas e manutenção</title><script>
+const KEY='lopesTur.contasCarro.v1';
+localStorage.setItem(KEY,JSON.stringify({seguro:[{id:'s1',parcela:1,totalParcelas:12,valor:100,data:'2026-09-10',paga:false}]}));
+const x=JSON.parse(localStorage.getItem(KEY));
+if(!x.seguro?.length||x.seguro[0].valor!==100) throw new Error('Falha ao preservar Seguro');
+document.write('RED: teste base criado; a implementação deve sincronizar a chave '+KEY+' sem perder parcelas.');
+</script>
