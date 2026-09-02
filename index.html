@@ -11,11 +11,12 @@
   <link rel="icon" href="logo-lopes-tur.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="logo-lopes-tur.svg" />
   <title>Lopes Tur</title>
-  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="stylesheet" href="styles.css?v=9" />
 </head>
 <body>
   <header class="topbar"><div class="brand"><img class="brand-photo" src="lopes-tur-carro.png" alt="Carro Lopes Tur" /><div><span class="eyebrow">CONTROLE DO SEU CARRO</span><h1>Lopes Tur</h1></div></div><button class="icon-button" id="exportButton" title="Exportar dados">⇩</button></header>
   <main id="app" class="content"></main>
+  <section id="kmc-view" class="content kmc-standalone" hidden></section>
   <nav class="bottom-nav" aria-label="Navegação principal">
     <button data-view="dashboard" class="active">⌂<span>Painel</span></button>
     <button data-view="income">＋<span>Ganhos</span></button>
@@ -23,6 +24,7 @@
     <button data-view="personal">👤<span>Pessoal</span></button>
     <button data-view="reports">▥<span>Relatórios</span></button>
     <button data-view="settings">⚙<span>Ajustes</span></button>
+    <button id="kmc-nav" class="kmc-nav-button">🧮<span>Calculadora KM</span></button>
   </nav>
   <div id="toast" role="status"></div>
   <script src="categorias-fix.js?v=2"></script>
@@ -34,7 +36,18 @@
   <script src="pessoal-fix.js?v=3"></script>
   <script src="relatorios-fix.js?v=3"></script>
   <script src="sincronizacao.js?v=5"></script>
-  <!-- A integração automática da Uber foi removida. Uber continua disponível para lançamento manual. -->
+  <script src="calculadora-km.js?v=1"></script>
+  <script>
+    (function(){
+      const app=document.getElementById('app'), kmView=document.getElementById('kmc-view'), nav=document.getElementById('kmc-nav');
+      nav.onclick=function(){
+        document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
+        nav.classList.add('active'); app.hidden=true; kmView.hidden=false;
+        if(window.LopesTurCalculadoraKM) window.LopesTurCalculadoraKM.render();
+      };
+      document.querySelectorAll('.bottom-nav button[data-view]').forEach(b=>b.addEventListener('click',()=>{app.hidden=false;kmView.hidden=true;nav.classList.remove('active');}));
+    })();
+  </script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js?v=9').then(async reg => {
