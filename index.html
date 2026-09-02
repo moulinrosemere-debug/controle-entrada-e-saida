@@ -35,12 +35,13 @@
   <script src="app.js?v=23"></script>
   <script src="ultimos-lancamentos-fix.js?v=4"></script>
   <script src="contas-carro.js?v=5"></script>
+  <script src="calendario-carro.js?v=2"></script>
   <script src="lembretes-contas.js?v=3"></script>
   <script src="metas-diarias.js?v=5"></script>
   <script src="pessoal-fix.js?v=4"></script>
   <script src="pessoal-calendario.js?v=2"></script>
   <script src="relatorios-fix.js?v=3"></script>
-  <script src="sincronizacao-v2.js?v=1"></script>
+  <script src="sincronizacao-v3.js?v=1"></script>
   <script src="calculadora-km.js?v=3"></script>
   <script>
     (function(){
@@ -51,7 +52,7 @@
   </script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=13').then(async reg => {
+      navigator.serviceWorker.register('./sw.js?v=14').then(async reg => {
         if (Notification.permission === 'default') await Notification.requestPermission();
         if (reg.active) reg.active.postMessage({type:'CHECK_REMINDERS'});
       }).catch(()=>{});
