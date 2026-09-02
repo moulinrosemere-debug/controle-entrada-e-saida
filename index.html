@@ -12,6 +12,10 @@
   <link rel="apple-touch-icon" href="logo-lopes-tur.svg" />
   <title>Lopes Tur</title>
   <link rel="stylesheet" href="styles.css?v=9" />
+  <style>
+    .bottom-nav{overflow-x:auto;justify-content:flex-start}.bottom-nav button{width:auto;min-width:92px;flex:0 0 auto}.kmc-nav-button{border-left:1px solid rgba(240,209,138,.2)!important}
+    .kmc-standalone{max-width:760px}.kmc-standalone[hidden]{display:none}.kmc-standalone textarea{min-height:125px}.kmc-standalone .metric strong{font-size:20px}
+  </style>
 </head>
 <body>
   <header class="topbar"><div class="brand"><img class="brand-photo" src="lopes-tur-carro.png" alt="Carro Lopes Tur" /><div><span class="eyebrow">CONTROLE DO SEU CARRO</span><h1>Lopes Tur</h1></div></div><button class="icon-button" id="exportButton" title="Exportar dados">⇩</button></header>
@@ -36,7 +40,7 @@
   <script src="pessoal-fix.js?v=3"></script>
   <script src="relatorios-fix.js?v=3"></script>
   <script src="sincronizacao.js?v=5"></script>
-  <script src="calculadora-km.js?v=1"></script>
+  <script src="calculadora-km.js?v=2"></script>
   <script>
     (function(){
       const app=document.getElementById('app'), kmView=document.getElementById('kmc-view'), nav=document.getElementById('kmc-nav');
