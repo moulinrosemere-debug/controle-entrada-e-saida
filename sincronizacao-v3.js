@@ -1,13 +1,11 @@
-/* Lopes Tur — sincronização v4: lançamentos + Contas e manutenção */
+/* Lopes Tur — sincronização v5: envio imediato dos lançamentos + Contas e manutenção */
 (function(){
   const URL='https://gtrntzlbipyxehtaxybu.supabase.co';
   const KEY='sb_publishable_EIn3yLKsJs3FJKiZeZDs9g_4uAB5xyX';
   const ID='principal',TABLE='lopes_tur_dados',CAR_KEY='lopesTur.contasCarro.v1',STATE_KEY='meuLucroUber.v1';
   const loadScript=u=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=u;s.onload=ok;s.onerror=no;document.head.appendChild(s)});
   const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch(e){return f}};
-  const carData=()=>read(CAR_KEY,{});
-  const mainData=()=>read(STATE_KEY,null);
-  const hasData=x=>x&&['ipva','seguro','manutencoes','multas'].some(k=>Array.isArray(x[k])&&x[k].length);
+  const carData=()=>read(CAR_KEY,{}),mainData=()=>read(STATE_KEY,null);
   const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
   const saveCar=x=>localStorage.setItem(CAR_KEY,JSON.stringify(x||{}));
   const saveMain=x=>localStorage.setItem(STATE_KEY,JSON.stringify(x||{}));
@@ -27,9 +25,12 @@
       }catch(e){console.error('Falha ao enviar sincronização:',e);status('Sem sincronização');return false}
       finally{sending=false}
     }
+    const queueSend=()=>{clearTimeout(timer);timer=setTimeout(send,50)};
     window.lopesTurSincronizacao={syncNow:send};
     const originalSave=window.save;
-    if(typeof originalSave==='function')window.save=function(){originalSave();clearTimeout(timer);timer=setTimeout(send,150)};
+    if(typeof originalSave==='function')window.save=function(){originalSave();queueSend()};
+    window.addEventListener('lopes-tur:state-saved',queueSend);
+    window.addEventListener('online',queueSend);
     const localCar=carData(),localMain=mainData();
     const r=await client.from(TABLE).select('dados,atualizado_em').eq('id',ID).maybeSingle();
     if(r.error)throw r.error;
@@ -44,7 +45,7 @@
       remote=false;lastCar=carData();lastMain=mainData();
       if(c&&!same(localCar,c)&&!reloading){reloading=true;setTimeout(()=>location.reload(),100)}
     }else await send();
-    client.channel('lopes-tur-sync-v4').on('postgres_changes',{event:'*',schema:'public',table:TABLE,filter:`id=eq.${ID}`},p=>{
+    client.channel('lopes-tur-sync-v5').on('postgres_changes',{event:'*',schema:'public',table:TABLE,filter:`id=eq.${ID}`},p=>{
       if(!p.new||!p.new.dados)return;
       const d={...p.new.dados},c=d.__lopesTurContasCarro,oldCar=carData();
       delete d.__lopesTurContasCarro;remote=true;
