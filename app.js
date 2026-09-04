@@ -4,7 +4,7 @@ const key='meuLucroUber.v1';
 const blockedCategories=new Set(['IPVA 3/3','IPVA/licenciamento','Seguro','Manutenção','Multas']);
 let state=load(),view='dashboard',editing=null,maintenanceEditing=null;
 function load(){try{const saved=JSON.parse(localStorage.getItem(key));if(saved){saved.categories=(Array.isArray(saved.categories)?saved.categories:[]).filter(x=>!blockedCategories.has(String(x).trim()));if(!saved.categories.includes('GRT'))saved.categories.push('GRT');saved.uses=['Trabalho Uber'];saved.maintenance=Array.isArray(saved.maintenance)?saved.maintenance:[];return saved;}}catch(e){}return{incomes:[],expenses:[],maintenance:[],categories:[...initialCategories],uses:[...initialUses]};}
-function save(){localStorage.setItem(key,JSON.stringify(state));}
+function save(){localStorage.setItem(key,JSON.stringify(state));try{window.dispatchEvent(new CustomEvent('lopes-tur:state-saved'))}catch(e){}}
 const money=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(n||0));
 const number=n=>new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2}).format(Number(n||0));
 const id=()=>crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
