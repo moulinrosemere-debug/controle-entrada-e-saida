@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Lopes Tur" />
-  <link rel="manifest" href="manifest.webmanifest?v=10" />
+  <link rel="manifest" href="manifest.webmanifest?v=11" />
   <link rel="icon" href="logo-lopes-tur.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="logo-lopes-tur.svg" />
   <title>Lopes Tur</title>
@@ -36,23 +36,23 @@
   <script src="ultimos-lancamentos-fix.js?v=4"></script>
   <script src="contas-carro.js?v=5"></script>
   <script src="calendario-carro.js?v=2"></script>
-  <script src="lembretes-contas.js?v=3"></script>
+  <script src="lembretes-contas.js?v=4"></script>
   <script src="metas-diarias.js?v=5"></script>
   <script src="pessoal-fix.js?v=5"></script>
   <script src="pessoal-calendario.js?v=3"></script>
   <script src="relatorios-fix.js?v=3"></script>
-  <script src="sincronizacao-v3.js?v=1"></script>
+  <script src="sincronizacao-v3.js?v=4"></script>
   <script src="calculadora-km.js?v=5"></script>
   <script>
     (function(){
-      const app=document.getElementById('app'), kmView=document.getElementById('kmc-view'), nav=document.getElementById('kmc-nav');
+      const app=document.getElementById('app'),kmView=document.getElementById('kmc-view'),nav=document.getElementById('kmc-nav');
       nav.onclick=function(){document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));nav.classList.add('active');app.hidden=true;kmView.hidden=false;if(window.LopesTurCalculadoraKM)window.LopesTurCalculadoraKM.render();};
       document.querySelectorAll('.bottom-nav button[data-view]').forEach(b=>b.addEventListener('click',()=>{app.hidden=false;kmView.hidden=true;nav.classList.remove('active');}));
     })();
   </script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=15').then(async reg => {
+      navigator.serviceWorker.register('./sw.js?v=16').then(async reg => {
         if (Notification.permission === 'default') await Notification.requestPermission();
         if (reg.active) reg.active.postMessage({type:'CHECK_REMINDERS'});
       }).catch(()=>{});
