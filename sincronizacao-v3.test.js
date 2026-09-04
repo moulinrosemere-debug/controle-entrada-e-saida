@@ -1,0 +1,20 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const sync=fs.readFileSync('sincronizacao-v3.js','utf8');
+const index=fs.readFileSync('index.html','utf8');
+const calc=fs.readFileSync('calculadora-km.js','utf8');
+const pessoal=fs.readFileSync('pessoal-fix.js','utf8');
+const reminders=fs.readFileSync('lembretes-contas.js','utf8');
+const sw=fs.readFileSync('sw.js','utf8');
+
+assert.match(sync,/meuLucroUber\.v1/,'sincronizacao deve observar os lancamentos principais');
+assert.match(sync,/setInterval\(\(\)=>\{[\s\S]*nowMain/,'sincronizacao deve detectar mudancas no estado principal');
+assert.match(sync,/sending/,'sincronizacao deve impedir envios concorrentes');
+assert.match(index,/sincronizacao-v3\.js\?v=4/,'index deve carregar a versao atual da sincronizacao');
+assert.match(calc,/const kmValue=km\*rate/,'calculadora deve calcular valor monetario dos KM');
+assert.match(calc,/serviceMetric\.hidden=service==='manual'/,'valor do servico deve aparecer apenas quando houver servico');
+assert.match(pessoal,/name="dueDate"/,'Pessoal deve ter vencimento');
+assert.match(pessoal,/lopesTurCalendarioPessoal\.syncCalendar/,'Pessoal deve integrar com calendario');
+assert.match(reminders,/reminderDays:1/,'Pessoal deve gerar lembrete de 1 dia');
+assert.match(sw,/typeof item\.reminderDays==='number'\?n===item\.reminderDays/,'service worker deve respeitar lembretes individualizados');
+console.log('Lopes Tur regressao estrutural: OK');
