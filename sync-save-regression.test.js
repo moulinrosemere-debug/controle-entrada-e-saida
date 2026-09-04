@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const app=fs.readFileSync('app.js','utf8');
+const sync=fs.readFileSync('sincronizacao-v3.js','utf8');
+const index=fs.readFileSync('index.html','utf8');
+assert.match(app,/lopes-tur:state-saved/);
+assert.match(sync,/addEventListener\('lopes-tur:state-saved'/);
+assert.match(sync,/setInterval/);
+assert.match(index,/sincronizacao-v3\.js\?v=5/);
+assert.match(index,/app\.js\?v=24/);
+console.log('sync-save-regression: OK');
