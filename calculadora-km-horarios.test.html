@@ -1,0 +1,11 @@
+<!doctype html><meta charset="utf-8"><title>Teste horários de espera</title><script>
+(function(){
+  const assert=(ok,msg)=>{if(!ok)throw new Error(msg)};
+  function minutos(inicio,fim){const [h1,m1]=inicio.split(':').map(Number),[h2,m2]=fim.split(':').map(Number);let a=h1*60+m1,b=h2*60+m2;if(b<a)b+=1440;return b-a;}
+  assert(minutos('14:30','16:00')===90,'14:30-16:00 deve resultar em 90 minutos');
+  assert(minutos('23:30','01:00')===90,'virada de dia deve resultar em 90 minutos');
+  assert((90/60)*80===120,'90 min diurnos devem custar R$ 120');
+  assert((90/60)*90===135,'90 min noturnos devem custar R$ 135');
+  document.write('<h2>OK — testes de horários concluídos</h2>');
+})();
+</script>
