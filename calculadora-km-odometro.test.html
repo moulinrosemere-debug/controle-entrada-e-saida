@@ -4,9 +4,9 @@
 <body>
 <div id="kmc-view"></div>
 <script src="calculadora-km.js"></script>
+<script src="calculadora-odometro.js"></script>
 <script>
 (function(){
-  const results=[];
   function assert(condition,message){if(!condition)throw new Error(message);}
   function run(){
     LopesTurCalculadoraKM.render();
@@ -15,12 +15,11 @@
     assert(initial && final,'Os campos de odômetro inicial e final devem existir.');
     initial.value='25430';
     final.value='25630';
-    initial.dispatchEvent(new Event('input'));
-    final.dispatchEvent(new Event('input'));
+    initial.dispatchEvent(new Event('input',{bubbles:true}));
+    final.dispatchEvent(new Event('input',{bubbles:true}));
     const km=document.getElementById('kmc-manual-km');
     assert(km.value==='200','200 km devem ser calculados automaticamente a partir do odômetro.');
     assert(document.getElementById('kmc-km').textContent.includes('200'),'O resultado deve mostrar 200 km.');
-    results.push('PASS');
   }
   try{run();document.body.insertAdjacentHTML('beforeend','<pre id="result">PASS</pre>');}
   catch(e){document.body.insertAdjacentHTML('beforeend','<pre id="result">FAIL: '+e.message+'</pre>');throw e;}
