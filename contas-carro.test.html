@@ -1,0 +1,20 @@
+<!doctype html><meta charset="utf-8"><title>Teste Contas e Parcelas</title><div id="app"><div class="section-head"><h2>Painel</h2></div></div><script src="contas-carro.js?v=test"></script><script>
+document.addEventListener('DOMContentLoaded',()=>{
+  localStorage.clear();
+  document.getElementById('ctcOpen').click();
+  document.querySelector('[data-tab="ipva"]').click();
+  document.getElementById('ctcTotal').value='1200';
+  document.getElementById('ctcN').value='3';
+  document.getElementById('ctcDate').value='2026-09-10';
+  document.querySelector('[data-save]').click();
+  const first=document.querySelector('[data-edit]');
+  first.click();
+  document.getElementById('ctcTotal').value='1500';
+  document.getElementById('ctcDate').value='2026-10-01';
+  document.querySelector('[data-save]').click();
+  const items=[...document.querySelectorAll('.ctc-item')];
+  const ok=items.length===3 && items.every(x=>x.textContent.includes('R$ 500,00')) && items[0].textContent.includes('01/10/2026') && items[1].textContent.includes('01/11/2026') && items[2].textContent.includes('01/12/2026');
+  if(!ok) throw new Error('Editar uma parcela deveria atualizar todas as parcelas do mesmo grupo.');
+  document.body.insertAdjacentHTML('beforeend','<p id="ok">PASSOU</p>');
+});
+</script>
