@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Teste Calculadora KM — Odômetro</title></head>
+<body>
+<div id="kmc-view"></div>
+<script src="calculadora-km.js"></script>
+<script>
+(function(){
+  const results=[];
+  function assert(condition,message){if(!condition)throw new Error(message);}
+  function run(){
+    LopesTurCalculadoraKM.render();
+    const initial=document.getElementById('kmc-odometer-start');
+    const final=document.getElementById('kmc-odometer-end');
+    assert(initial && final,'Os campos de odômetro inicial e final devem existir.');
+    initial.value='25430';
+    final.value='25630';
+    initial.dispatchEvent(new Event('input'));
+    final.dispatchEvent(new Event('input'));
+    const km=document.getElementById('kmc-manual-km');
+    assert(km.value==='200','200 km devem ser calculados automaticamente a partir do odômetro.');
+    assert(document.getElementById('kmc-km').textContent.includes('200'),'O resultado deve mostrar 200 km.');
+    results.push('PASS');
+  }
+  try{run();document.body.insertAdjacentHTML('beforeend','<pre id="result">PASS</pre>');}
+  catch(e){document.body.insertAdjacentHTML('beforeend','<pre id="result">FAIL: '+e.message+'</pre>');throw e;}
+})();
+</script>
+</body>
+</html>
