@@ -1,4 +1,4 @@
-/* Lopes Tur — sincronização v8: evita redesenho do menu no eco local do Realtime */
+/* Lopes Tur — sincronização v9: evita redesenho do menu no eco local do Realtime */
 (function(){
   const URL='https://gtrntzlbipyxehtaxybu.supabase.co';
   const KEY='sb_publishable_EIn3yLKsJs3FJKiZeZDs9g_4uAB5xyX';
@@ -48,14 +48,14 @@
       remote=false;lastCar=carData();lastMain=mainData();lastCalc=calcData();
       if((c&&!same(localCar,c)||k&&!same(localCalc,k))&&!reloading){reloading=true;setTimeout(()=>location.reload(),100)}
     }else await send();
-    client.channel('lopes-tur-sync-v8').on('postgres_changes',{event:'*',schema:'public',table:TABLE,filter:`id=eq.${ID}`},p=>{
+    client.channel('lopes-tur-sync-v9').on('postgres_changes',{event:'*',schema:'public',table:TABLE,filter:`id=eq.${ID}`},p=>{
       if(!p.new||!p.new.dados)return;
       const d={...p.new.dados},c=d.__lopesTurContasCarro,k=d.__lopesTurCalculadoraKM;
       const oldCar=carData(),oldMain=mainData(),oldCalc=calcData();
+      delete d.__lopesTurContasCarro;delete d.__lopesTurCalculadoraKM;
       const localEcho=(!c||same(oldCar,c))&&(!k||same(oldCalc,k))&&same(oldMain,d);
       if(localEcho){status('Sincronizado');lastCar=oldCar;lastMain=oldMain;lastCalc=oldCalc;return;}
       remote=true;
-      delete d.__lopesTurContasCarro;delete d.__lopesTurCalculadoraKM;
       if(c)saveCar(c);if(k)saveCalc(k);
       saveMain(d);if(typeof state!=='undefined')state=d;
       if(typeof render==='function')render();
