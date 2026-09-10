@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><title>Teste sincronização Calculadora KM</title></head>
-<body><section id="kmc-view"></section>
+<body><div id="syncStatus"></div><section id="kmc-view"></section>
 <script src="calculadora-km.js"></script>
 <script>
 (function(){
@@ -17,6 +17,10 @@
   if(!saved) throw new Error('Dados da Calculadora KM não foram salvos.');
   if(saved.odometerStart!=='25430'||saved.odometerEnd!=='25630'||saved.client!=='Sr. Adalmo') throw new Error('Dados salvos incorretamente.');
   if(saved.km!=='200') throw new Error('KM calculado não foi salvo como 200.');
-  document.body.insertAdjacentHTML('beforeend','<pre>PASS</pre>');
+  document.body.insertAdjacentHTML('beforeend','<pre>PASS — dados locais prontos para sincronização</pre>');
 })();
+</script>
+<script>
+// Contrato visual: o módulo de sincronização deve exibir o status imediatamente, antes da conexão assíncrona.
+if(!document.getElementById('syncStatus').textContent.includes('Sincronização ativa')) throw new Error('Status Sincronização ativa não está visível imediatamente.');
 </script></body></html>
