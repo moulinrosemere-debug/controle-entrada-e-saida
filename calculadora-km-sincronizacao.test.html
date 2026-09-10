@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Teste sincronização Calculadora KM</title></head>
+<body><section id="kmc-view"></section>
+<script src="calculadora-km.js"></script>
+<script>
+(function(){
+  localStorage.clear();
+  if(!window.LopesTurCalculadoraKM) throw new Error('Calculadora não carregou.');
+  LopesTurCalculadoraKM.render();
+  const initial=document.getElementById('kmc-odometer-start');
+  const final=document.getElementById('kmc-odometer-end');
+  const client=document.getElementById('kmc-client');
+  if(!initial||!final) throw new Error('Campos de odômetro não existem.');
+  initial.value='25430'; final.value='25630'; client.value='Sr. Adalmo';
+  initial.dispatchEvent(new Event('input')); final.dispatchEvent(new Event('input')); client.dispatchEvent(new Event('input'));
+  const saved=JSON.parse(localStorage.getItem('lopesTur.calculadoraKM.v1')||'null');
+  if(!saved) throw new Error('Dados da Calculadora KM não foram salvos.');
+  if(saved.odometerStart!=='25430'||saved.odometerEnd!=='25630'||saved.client!=='Sr. Adalmo') throw new Error('Dados salvos incorretamente.');
+  if(saved.km!=='200') throw new Error('KM calculado não foi salvo como 200.');
+  document.body.insertAdjacentHTML('beforeend','<pre>PASS</pre>');
+})();
+</script></body></html>
