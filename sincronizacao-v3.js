@@ -1,4 +1,4 @@
-/* Lopes Tur — sincronização v6: lançamentos + Contas e manutenção + Calculadora KM */
+/* Lopes Tur — sincronização v7: lançamentos + Contas e manutenção + Calculadora KM */
 (function(){
   const URL='https://gtrntzlbipyxehtaxybu.supabase.co';
   const KEY='sb_publishable_EIn3yLKsJs3FJKiZeZDs9g_4uAB5xyX';
@@ -10,7 +10,8 @@
   const saveCar=x=>localStorage.setItem(CAR_KEY,JSON.stringify(x||{}));
   const saveMain=x=>localStorage.setItem(STATE_KEY,JSON.stringify(x||{}));
   const saveCalc=x=>localStorage.setItem(CALC_KEY,JSON.stringify(x||{}));
-  const status=t=>{let e=document.getElementById('syncStatus');if(!e){e=document.createElement('div');e.id='syncStatus';e.style.cssText='position:fixed;right:12px;bottom:78px;z-index:9999;padding:7px 11px;border-radius:999px;background:#116149;color:#fff;font:600 12px system-ui;box-shadow:0 3px 12px rgba(0,0,0,.15);opacity:.92'}e.textContent='☁ '+t};
+  const status=t=>{let e=document.getElementById('syncStatus');if(!e){e=document.createElement('div');e.id='syncStatus';e.style.cssText='position:fixed;right:12px;bottom:78px;z-index:99999;padding:7px 11px;border-radius:999px;background:#116149;color:#fff;font:600 12px system-ui;box-shadow:0 3px 12px rgba(0,0,0,.15);opacity:.92;pointer-events:none'}e.textContent='☁ '+t};
+  status('Sincronização ativa');
   async function start(){try{
     if(!window.supabase)await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
     const client=window.supabase.createClient(URL,KEY);window.lopesTurSupabase=client;
@@ -47,7 +48,7 @@
       remote=false;lastCar=carData();lastMain=mainData();lastCalc=calcData();
       if((c&&!same(localCar,c)||k&&!same(localCalc,k))&&!reloading){reloading=true;setTimeout(()=>location.reload(),100)}
     }else await send();
-    client.channel('lopes-tur-sync-v6').on('postgres_changes',{event:'*',schema:'public',table:TABLE,filter:`id=eq.${ID}`},p=>{
+    client.channel('lopes-tur-sync-v7').on('postgres_changes',{event:'*',schema:'public',table:TABLE,filter:`id=eq.${ID}`},p=>{
       if(!p.new||!p.new.dados)return;
       const d={...p.new.dados},c=d.__lopesTurContasCarro,k=d.__lopesTurCalculadoraKM,oldCar=carData(),oldCalc=calcData();
       delete d.__lopesTurContasCarro;delete d.__lopesTurCalculadoraKM;remote=true;
