@@ -1,4 +1,4 @@
-/* Lopes Tur — sincronização v9: evita redesenho do menu no eco local do Realtime */
+/* Lopes Tur — sincronização v10: preserva a tela da Calculadora KM */
 (function(){
   const URL='https://gtrntzlbipyxehtaxybu.supabase.co';
   const KEY='sb_publishable_EIn3yLKsJs3FJKiZeZDs9g_4uAB5xyX';
@@ -10,12 +10,14 @@
   const saveCar=x=>localStorage.setItem(CAR_KEY,JSON.stringify(x||{}));
   const saveMain=x=>localStorage.setItem(STATE_KEY,JSON.stringify(x||{}));
   const saveCalc=x=>localStorage.setItem(CALC_KEY,JSON.stringify(x||{}));
+  const calculatorOpen=()=>{const e=document.getElementById('kmc-view');return !!(e&&!e.hidden)};
+  const refreshVisibleView=()=>{if(calculatorOpen()){if(window.LopesTurCalculadoraKM)window.LopesTurCalculadoraKM.render();return;}if(typeof render==='function')render()};
   const status=t=>{let e=document.getElementById('syncStatus');if(!e){e=document.createElement('div');e.id='syncStatus';e.style.cssText='position:fixed;right:12px;bottom:78px;z-index:99999;padding:7px 11px;border-radius:999px;background:#116149;color:#fff;font:600 12px system-ui;box-shadow:0 3px 12px rgba(0,0,0,.15);opacity:.92;pointer-events:none'}e.textContent='☁ '+t};
   status('Sincronização ativa');
   async function start(){try{
     if(!window.supabase)await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
     const client=window.supabase.createClient(URL,KEY);window.lopesTurSupabase=client;
-    let remote=false,lastCar=carData(),lastMain=mainData(),lastCalc=calcData(),sending=false,timer=0,reloading=false;
+    let remote=false,lastCar=carData(),lastMain=mainData(),lastCalc=calcData(),sending=false,timer=0;
     async function send(){
       if(remote||sending||typeof state==='undefined')return false;
       sending=true;
@@ -44,11 +46,10 @@
       delete d.__lopesTurContasCarro;delete d.__lopesTurCalculadoraKM;
       if(Object.keys(d).length)saveMain(d);
       if(typeof state!=='undefined')state=d;
-      if(typeof render==='function')render();
+      refreshVisibleView();
       remote=false;lastCar=carData();lastMain=mainData();lastCalc=calcData();
-      if((c&&!same(localCar,c)||k&&!same(localCalc,k))&&!reloading){reloading=true;setTimeout(()=>location.reload(),100)}
     }else await send();
-    client.channel('lopes-tur-sync-v9').on('postgres_changes',{event:'*',schema:'public',table:TABLE,filter:`id=eq.${ID}`},p=>{
+    client.channel('lopes-tur-sync-v10').on('postgres_changes',{event:'*',schema:'public',table:TABLE,filter:`id=eq.${ID}`},p=>{
       if(!p.new||!p.new.dados)return;
       const d={...p.new.dados},c=d.__lopesTurContasCarro,k=d.__lopesTurCalculadoraKM;
       const oldCar=carData(),oldMain=mainData(),oldCalc=calcData();
@@ -58,9 +59,8 @@
       remote=true;
       if(c)saveCar(c);if(k)saveCalc(k);
       saveMain(d);if(typeof state!=='undefined')state=d;
-      if(typeof render==='function')render();
+      if(!calculatorOpen())refreshVisibleView();
       remote=false;lastCar=carData();lastMain=mainData();lastCalc=calcData();
-      if(((c&&!same(oldCar,c))||(k&&!same(oldCalc,k)))&&!reloading){reloading=true;setTimeout(()=>location.reload(),100)}
       if(window.lopesTurLembretes)window.lopesTurLembretes.run();status('Atualizado em outro dispositivo');
     }).subscribe(s=>{if(s==='SUBSCRIBED')status('Sincronização ativa')});
     setInterval(()=>{const c=carData(),m=mainData(),k=calcData();if(!same(c,lastCar)||!same(m,lastMain)||!same(k,lastCalc)){lastCar=c;lastMain=m;lastCalc=k;send()}},1000);
