@@ -31,3 +31,34 @@ function addSetting(type){if(type!=='category')return;const input=document.query
 function renameSetting(value){const[type,index]=value.split(':');if(type!=='category')return;const old=state.categories[index],next=prompt('Novo nome:',old);if(!next||!next.trim()||blockedCategories.has(next.trim())||state.categories.includes(next.trim()))return;state.categories[index]=next.trim();state.expenses.forEach(x=>{if(x.category===old)x.category=next.trim();});save();render();}
 function removeSetting(value){const[type,index]=value.split(':');if(type!=='category')return;const name=state.categories[index];if(blockedCategories.has(String(name).trim()))return;if(!confirm(`Excluir "${name}"? Os lançamentos antigos continuarão registrados.`))return;state.categories.splice(index,1);save();render();}
 render();
+
+// lopesTur-export-backup: exporta os dados locais para um arquivo JSON.
+(function(){
+  function exportLopesTurBackup(){
+    try {
+      const data={};
+      for(let i=0;i<localStorage.length;i++){
+        const k=localStorage.key(i);
+        if(k && (k==='meuLucroUber.v1' || k.startsWith('lopesTur.'))) data[k]=localStorage.getItem(k);
+      }
+      const backup={format:'lopes-tur-backup',version:1,exportedAt:new Date().toISOString(),data};
+      const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download='lopes-tur-backup-'+new Date().toISOString().slice(0,10)+'.json';
+      document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),2000);
+      if(typeof toast==='function') toast('Backup preparado. Confira os downloads do celular.');
+    } catch(e) {
+      console.error('Falha ao exportar backup Lopes Tur:',e);
+      alert('Não foi possível exportar o backup. Tente abrir o aplicativo no navegador e permitir downloads.');
+    }
+  }
+  function bindExportButton(){
+    const b=document.getElementById('exportButton');
+    if(b && !b.dataset.exportBound){b.dataset.exportBound='1';b.addEventListener('click',exportLopesTurBackup);}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bindExportButton);
+  else bindExportButton();
+})();
