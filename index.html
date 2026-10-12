@@ -33,8 +33,56 @@
   </nav>
   <div id="syncStatus">☁ Sincronização ativa</div>
   <div id="toast" role="status"></div>
+
+  <script>
+    // Exportação independente: mantém o botão funcionando mesmo se o app.js falhar.
+    (function(){
+      function exportBackup(){
+        try {
+          const data={};
+          for(let i=0;i<localStorage.length;i++){
+            const key=localStorage.key(i);
+            if(key && (key==='meuLucroUber.v1' || key.startsWith('lopesTur.'))) data[key]=localStorage.getItem(key);
+          }
+          const backup={format:'lopes-tur-backup',version:1,exportedAt:new Date().toISOString(),data};
+          const json=JSON.stringify(backup,null,2);
+          const fileName='lopes-tur-backup-'+new Date().toISOString().slice(0,10)+'.json';
+          const blob=new Blob([json],{type:'application/json;charset=utf-8'});
+          const url=URL.createObjectURL(blob);
+          const a=document.createElement('a');
+          a.href=url;a.download=fileName;a.style.display='none';
+          document.body.appendChild(a);a.click();a.remove();
+          setTimeout(()=>URL.revokeObjectURL(url),10000);
+          const msg='Backup gerado: '+fileName+'. Se não aparecer em Downloads, use a opção Compartilhar.';
+          const toast=document.getElementById('toast');
+          if(toast){toast.textContent=msg;toast.classList.add('show');}
+          if(navigator.share && navigator.canShare){
+            try {
+              const file=new File([json],fileName,{type:'application/json'});
+              if(navigator.canShare({files:[file]})){
+                setTimeout(()=>{ if(confirm('O download não apareceu? Deseja abrir o compartilhamento do Android para guardar o backup?')) navigator.share({files:[file],title:'Backup Lopes Tur'}).catch(()=>{}); },300);
+              }
+            } catch(e){}
+          }
+        } catch(e) {
+          console.error('Exportação Lopes Tur:',e);
+          alert('O navegador bloqueou a exportação. Abra o site no Chrome e tente novamente.');
+        }
+      }
+      function setup(){
+        const b=document.getElementById('exportButton');
+        if(b && !b.dataset.exportBound){
+          b.dataset.exportBound='independent';
+          b.addEventListener('click',function(e){e.preventDefault();exportBackup();});
+        }
+      }
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);
+      else setup();
+    })();
+  </script>
+
   <script src="categorias-fix.js?v=2"></script>
-  <script src="app.js?v=25"></script>
+  <script src="app.js?v=26"></script>
   <script src="ultimos-lancamentos-fix.js?v=4"></script>
   <script src="contas-carro.js?v=5"></script>
   <script src="calendario-carro.js?v=2"></script>
