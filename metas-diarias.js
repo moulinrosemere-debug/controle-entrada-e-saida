@@ -54,8 +54,8 @@
   window.settings = function(){
     const base = oldSettings();
     const daily = ensureMeta().daily;
-    return base.replace('<div class="setting-group"><h3 class="section-title">Manutenção</h3>',
-      `<div class="setting-group"><h3 class="section-title">🎯 Meta diária para o carro</h3><form id="metaForm" class="form-card"><div class="form-grid"><label>Valor para guardar por dia (R$)<input required min="0" step="0.01" name="daily" type="number" value="${daily}" /></label></div><div class="form-actions"><button class="button" type="submit">Salvar meta</button></div></form><p class="hint">A meta é R$ 150 por dia trabalhado. Somente dias com ganhos de trabalho contam. A reserva diária não pode passar do valor ganho naquele dia.</p></div><div class="setting-group"><h3 class="section-title">Manutenção</h3>`);
+    return base.replace('<div class="setting-group"><h3 class="section-title">Manutenções</h3>',
+      `<div class="setting-group"><h3 class="section-title">🎯 Meta diária para o carro</h3><form id="metaForm" class="form-card"><div class="form-grid"><label>Valor para guardar por dia (R$)<input required min="0" step="0.01" name="daily" type="number" value="${daily}" /></label></div><div class="form-actions"><button class="button" type="submit">Salvar meta</button></div></form><p class="hint">Somente dias com ganhos de trabalho contam. A reserva diária não pode passar do valor ganho naquele dia.</p></div><div class="setting-group"><h3 class="section-title">Manutenções</h3>`);
   };
 
   const oldRender = window.render;
