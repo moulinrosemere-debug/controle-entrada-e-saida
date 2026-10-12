@@ -5,7 +5,23 @@
   let db=load();
   const save=()=>localStorage.setItem(KEY,JSON.stringify(db));
   const money=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(n||0));
-  const parseMoney=v=>{let s=String(v??'').trim().replace(/R\$|\s/g,'');if(!s)return 0;if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');else if(/^\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,'');const n=Number(s);return Number.isFinite(n)?n:NaN;};
+  const parseMoney=v=>{
+    let s=String(v??'').trim().replace(/R\\$|\\s/g,'');
+    if(!s)return 0;
+    const hasDot=s.includes('.'),hasComma=s.includes(',');
+    if(hasDot&&hasComma){
+      if(s.lastIndexOf(',')>s.lastIndexOf('.'))s=s.replace(/\\./g,'').replace(',','.');
+      else s=s.replace(/,/g,'');
+    }else if(hasComma){
+      const parts=s.split(',');
+      if(parts.length===2&&/^\\d{1,3}$/.test(parts[0])&&/^\\d{3}$/.test(parts[1]))s=parts.join('');
+      else s=s.replace(',','.');
+    }else if(hasDot){
+      if(/^\\d{1,3}(\\.\\d{3})+$/.test(s))s=s.replace(/\\./g,'');
+    }
+    const n=Number(s);
+    return Number.isFinite(n)?n:NaN;
+  };
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt=d=>d?d.split('-').reverse().join('/'):'—';
   const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
