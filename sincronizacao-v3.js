@@ -7,6 +7,23 @@
   const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch(e){return f}};
   const carData=()=>read(CAR_KEY,{}),mainData=()=>read(STATE_KEY,null),calcData=()=>read(CALC_KEY,{});
   const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  // Não deixa um computador sem lançamentos apagar os dados do celular.
+  const hasArrayItems=x=>Array.isArray(x)&&x.length>0;
+  const hasNestedItems=x=>{
+    if(Array.isArray(x))return x.length>0;
+    if(!x||typeof x!=='object')return false;
+    return Object.values(x).some(v=>hasNestedItems(v));
+  };
+  const hasUsefulData=(main,car,calc)=>{
+    const m=main&&typeof main==='object'?main:{};
+    return hasArrayItems(m.incomes)||hasArrayItems(m.expenses)||hasArrayItems(m.maintenance)||hasNestedItems(car)||hasNestedItems(calc);
+  };
+  const payloadHasUsefulData=d=>{
+    if(!d||typeof d!=='object')return false;
+    const main={...d};const car=main.__lopesTurContasCarro||{};const calc=main.__lopesTurCalculadoraKM||{};
+    delete main.__lopesTurContasCarro;delete main.__lopesTurCalculadoraKM;
+    return hasUsefulData(main,car,calc);
+  };
   const saveCar=x=>localStorage.setItem(CAR_KEY,JSON.stringify(x||{}));
   const saveMain=x=>localStorage.setItem(STATE_KEY,JSON.stringify(x||{}));
   const saveCalc=x=>localStorage.setItem(CALC_KEY,JSON.stringify(x||{}));
@@ -37,9 +54,10 @@
     window.addEventListener('lopes-tur:calculadora-saved',queueSend);
     window.addEventListener('online',queueSend);
     const localCar=carData(),localMain=mainData(),localCalc=calcData();
+    const localHasData=hasUsefulData(localMain,localCar,localCalc);
     const r=await client.from(TABLE).select('dados,atualizado_em').eq('id',ID).maybeSingle();
     if(r.error)throw r.error;
-    if(r.data&&r.data.dados){
+    if(r.data&&r.data.dados&&payloadHasUsefulData(r.data.dados)){
       const d={...r.data.dados},c=d.__lopesTurContasCarro,k=d.__lopesTurCalculadoraKM;
       remote=true;
       if(c)saveCar(c);if(k)saveCalc(k);
@@ -48,7 +66,13 @@
       if(typeof state!=='undefined')state=d;
       refreshVisibleView();
       remote=false;lastCar=carData();lastMain=mainData();lastCalc=calcData();
-    }else await send();
+    }else if(localHasData){
+      // Este dispositivo tem lançamentos e a nuvem está vazia: preserva e envia os dados locais.
+      await send();
+    }else{
+      // Não cria uma cópia vazia na nuvem. Aguarda um dispositivo que tenha lançamentos.
+      status('Aguardando dados do celular');
+    }
     client.channel('lopes-tur-sync-v10').on('postgres_changes',{event:'*',schema:'public',table:TABLE,filter:`id=eq.${ID}`},p=>{
       if(!p.new||!p.new.dados)return;
       const d={...p.new.dados},c=d.__lopesTurContasCarro,k=d.__lopesTurCalculadoraKM;
